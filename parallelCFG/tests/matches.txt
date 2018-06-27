@@ -1,0 +1,240 @@
+***************
+sender = (beta, 2)
+receiver = (star, 1)
+
+sender = (gamma, 2)
+receiver = (star, 2)
+
+sender = (alpha, 1)
+receiver = (beta, 1)
+
+sender = (alpha, 2)
+receiver = (gamma, 1)
+
+
+
+***************
+sender = (beta, 2)
+receiver = (star, 1)
+
+sender = (gamma, 2)
+receiver = (star, 2)
+
+sender = (alpha, 2)
+receiver = (gamma, 1)
+
+sender = (alpha, 1)
+receiver = (beta, 1)
+
+
+
+***************
+sender = (beta, 2)
+receiver = (star, 1)
+
+sender = (alpha, 1)
+receiver = (beta, 1)
+
+sender = (gamma, 2)
+receiver = (star, 2)
+
+sender = (alpha, 2)
+receiver = (gamma, 1)
+
+
+
+***************
+sender = (beta, 2)
+receiver = (star, 1)
+
+sender = (alpha, 1)
+receiver = (beta, 1)
+
+sender = (alpha, 2)
+receiver = (gamma, 1)
+
+sender = (gamma, 2)
+receiver = (star, 2)
+
+
+
+***************
+sender = (beta, 2)
+receiver = (star, 1)
+
+sender = (alpha, 2)
+receiver = (gamma, 1)
+
+sender = (gamma, 2)
+receiver = (star, 2)
+
+sender = (alpha, 1)
+receiver = (beta, 1)
+
+
+
+***************
+sender = (beta, 2)
+receiver = (star, 1)
+
+sender = (alpha, 2)
+receiver = (gamma, 1)
+
+sender = (alpha, 1)
+receiver = (beta, 1)
+
+sender = (gamma, 2)
+receiver = (star, 2)
+
+
+
+***************
+sender = (gamma, 2)
+receiver = (star, 1)
+
+sender = (beta, 2)
+receiver = (star, 2)
+
+sender = (alpha, 1)
+receiver = (beta, 1)
+
+sender = (alpha, 2)
+receiver = (gamma, 1)
+
+
+
+***************
+sender = (gamma, 2)
+receiver = (star, 1)
+
+sender = (beta, 2)
+receiver = (star, 2)
+
+sender = (alpha, 2)
+receiver = (gamma, 1)
+
+sender = (alpha, 1)
+receiver = (beta, 1)
+
+
+
+***************
+sender = (gamma, 2)
+receiver = (star, 1)
+
+sender = (alpha, 1)
+receiver = (beta, 1)
+
+sender = (beta, 2)
+receiver = (star, 2)
+
+sender = (alpha, 2)
+receiver = (gamma, 1)
+
+
+
+***************
+sender = (gamma, 2)
+receiver = (star, 1)
+
+sender = (alpha, 1)
+receiver = (beta, 1)
+
+sender = (alpha, 2)
+receiver = (gamma, 1)
+
+sender = (beta, 2)
+receiver = (star, 2)
+
+
+
+***************
+sender = (gamma, 2)
+receiver = (star, 1)
+
+sender = (alpha, 2)
+receiver = (gamma, 1)
+
+sender = (beta, 2)
+receiver = (star, 2)
+
+sender = (alpha, 1)
+receiver = (beta, 1)
+
+
+
+***************
+sender = (gamma, 2)
+receiver = (star, 1)
+
+sender = (alpha, 2)
+receiver = (gamma, 1)
+
+sender = (alpha, 1)
+receiver = (beta, 1)
+
+sender = (beta, 2)
+receiver = (star, 2)
+
+
+
+***************
+sender = (alpha, 1)
+receiver = (beta, 1)
+
+sender = (beta, 2)
+receiver = (star, 1)
+
+sender = (gamma, 2)
+receiver = (star, 2)
+
+sender = (alpha, 2)
+receiver = (gamma, 1)
+
+
+
+***************
+sender = (alpha, 1)
+receiver = (beta, 1)
+
+sender = (beta, 2)
+receiver = (star, 1)
+
+sender = (alpha, 2)
+receiver = (gamma, 1)
+
+sender = (gamma, 2)
+receiver = (star, 2)
+
+
+
+***************
+sender = (alpha, 1)
+receiver = (beta, 1)
+
+sender = (gamma, 2)
+receiver = (star, 1)
+
+sender = (beta, 2)
+receiver = (star, 2)
+
+sender = (alpha, 2)
+receiver = (gamma, 1)
+
+
+
+***************
+sender = (alpha, 1)
+receiver = (beta, 1)
+
+sender = (gamma, 2)
+receiver = (star, 1)
+
+sender = (alpha, 2)
+receiver = (gamma, 1)
+
+sender = (beta, 2)
+receiver = (star, 2)
+
+
+

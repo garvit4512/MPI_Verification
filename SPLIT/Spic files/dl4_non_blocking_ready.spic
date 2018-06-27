@@ -1,0 +1,479 @@
+<edu.spi.core.CoreInfo>
+  <version>1.0.1</version>
+  <smvTitle></smvTitle>
+  <spcTitle></spcTitle>
+  <verbosityLevel>HIGH</verbosityLevel>
+  <bddPackage>CUDD</bddPackage>
+  <bddTableSize>50000</bddTableSize>
+  <bddCacheSize>1000</bddCacheSize>
+  <doDeltaImp>true</doDeltaImp>
+  <smvContent>MODULE main
+  VAR
+    IS : array 1..4 of {0,1};
+    IR : array 1..4 of {0,1};
+    R1S2 : {0,1};
+    R1S4 : {0,1};   
+    R2S2 : {0,1};
+    R2S4 : {0,1};
+    R3S3 : {0,1};
+    R4S1 : {0,1};
+    P[1] : process Pr(1, IS, IR, R1S2, R1S4, R2S2, R2S4, R3S3, R4S1);
+    P[2] : process Pr(2, IS, IR, R1S2, R1S4, R2S2, R2S4, R3S3, R4S1);
+    P[3] : process Pr(3, IS, IR, R1S2, R1S4, R2S2, R2S4, R3S3, R4S1);
+    P[4] : process Pr(4, IS, IR, R1S2, R1S4, R2S2, R2S4, R3S3, R4S1);
+
+
+MODULE Pr(i, IS, IR, R1S2, R1S4, R2S2, R2S4, R3S3, R4S1)
+  DEFINE
+	loc1_cond1 := IR[1] = 1 &amp; IS[2] = 1 &amp; R1S2 = 0 &amp; R1S4 = 0 &amp; R2S2 = 0 ;
+	loc1_cond2 := IR[1] = 1 &amp; IS[4] = 1 &amp; R1S2 = 0 &amp; R1S4 = 0 &amp; R2S4 = 0 ;	
+
+	loc3_cond1 := IR[2] = 1 &amp; IS[2] = 1 &amp; R2S2 = 0 &amp; R2S4 = 0 &amp; R1S2 = 0 ;
+	loc3_cond2 := IR[2] = 1 &amp; IS[4] = 1 &amp; R2S2 = 0 &amp; R2S4 = 0 &amp; R1S4 = 0 ;
+
+	loc6_cond := IR[3] = 1 &amp; IS[3] = 1 &amp; R3S3 = 0;
+	loc7_cond := IR[4] = 1 &amp; IS[1] = 1 &amp; R4S1 = 0;
+  VAR
+	loc : 0..9;
+  ASSIGN
+	init(IS[1]) := 1;
+	init(IS[2]) := 1;
+	init(IS[3]) := 1;
+	init(IS[4]) := 1;
+
+	init(IR[1]) := 1;
+	init(IR[2]) := 0;
+	init(IR[3]) := 1;
+	init(IR[4]) := 1;
+
+	init(R1S2) := 0;
+	init(R1S4) := 0;
+	init(R2S2) := 0;
+	init(R2S4) := 0;
+	init(R3S3) := 0;
+	init(R4S1) := 0;
+	init(loc)  := 0;
+
+    next(loc) := case
+        loc = 0 &amp; i = 1     : 1;
+        loc = 0 &amp; i = 2     : 4;
+        loc = 0 &amp; i = 3     : 6;
+        loc = 0 &amp; i = 4     : 8;
+-- process id = 0
+        loc = 1 &amp; IR[1] = 1 &amp; i = 1 : 2;
+        loc = 2 &amp; IS[1] = 1 &amp; i = 1 : 3;
+        loc = 3 &amp; IR[2] = 1 &amp; i = 1 : 9;
+-- process id = 1
+        loc = 4 &amp; IS[2] = 1 &amp; i = 2: 5;
+        loc = 5 &amp; IS[3] = 1 &amp; i = 2: 9;
+-- process id = 2
+        loc = 6 &amp; IR[3] = 1 &amp; i = 3: 7;
+        loc = 7 &amp; IR[4] = 1 &amp; i = 3: 9;
+-- process id = 3
+        loc = 8 &amp; IS[4] = 1 &amp; i = 4: 9;
+-- otherwise 
+	--loc = 9 &amp; (R1S2 = 1 | R1S4 = 1) &amp; (R4S1 = 1) &amp; (R2S2 = 1 | R2S4 = 1) &amp; i = 1: 10;
+	--loc = 9 &amp; (R2S2 = 1 | R1S2 = 1) &amp; (R3S3 = 1)  &amp; i = 2: 10;
+	--loc = 9 &amp; (R3S3 = 1) &amp; (R4S1 = 1) &amp; i = 3: 10;
+	--loc = 9 &amp; (R2S4 = 1 | R1S4 = 1) &amp; i = 4: 10;
+        1       : loc;
+    esac;
+
+    next(IR[1]) := IR[1];
+    next(IR[2]) := case
+        (R1S2 = 1 | R1S4 = 1) : 1;
+        1                     : IR[2];
+    esac;
+    next(IR[3]) := IR[3];
+    next(IR[4]) := IR[4];
+    next(IS[1]) := IS[1];
+    next(IS[2]) := IS[2];
+    next(IS[3]) := IS[3];
+    next(IS[4]) := IS[4];
+
+    next(R1S2) := case
+      loc = 4 &amp; loc1_cond1 = 1 : 1;
+      1   : R1S2;
+    esac;
+    next(R1S4) := case
+      loc = 8 &amp; loc1_cond2 = 1 : 1;
+      1   : R1S4;
+    esac;
+    next(R2S2) := case
+      loc = 4 &amp; loc3_cond1 = 1 : 1;
+      1   : R2S2;
+    esac;
+    next(R2S4) := case
+      loc = 8 &amp; loc3_cond2 = 1 : 1;
+      1   : R2S4;
+    esac;
+    next(R3S3) := case
+      (loc = 5 ) &amp; loc6_cond = 1 : 1;
+      1   : R3S3;
+    esac;
+    next(R4S1) := case
+      (loc = 2 ) &amp; loc7_cond = 1 : 1;
+      1   : R4S1;
+    esac;
+    next(i) := i;
+</smvContent>
+  <spcSafetyContent>SPEC
+!(
+-- R1S2, R1S4, R2S2, R2S4, R3S3, R4S1
+
+-- NOT ALL MATCHED
+((R1S2=0 &amp; R1S4=0) | (R2S2=0 &amp; R2S4=0) | (R3S3 = 0) | (R4S1=0) | (R4S1=0) | (R1S2=0 &amp; R2S2=0) | (R3S3 = 0) | (R1S4=0 &amp; R2S4=0))
+-- NO MATCH POSSIBLE
+&amp; ((R1S2=1|R1S4=1|IR[1]=0|R2S2=1|IS[2]=0) &amp; (R1S2=1|R1S4=1|IR[1]=0|R2S4=1|IS[4]=0) &amp; (R2S2=1|R2S4=1|IR[2]=0|R1S2=1|IS[2]=0) &amp; (R2S4=1|R2S2=1|IR[2]=0|R1S4=1|IS[4]=0) &amp; (R3S3=1|IR[3]=0|IS[3]=0) &amp; (R4S1=1|IR[4]=0|IS[1]=0) )
+-- MATCH ONLY ISSUED
+&amp; (((R1S2=1 | R1S4=1) -&gt; IR[1]=1) &amp; ((R2S2=1 | R2S4=1) -&gt; IR[2]=1) &amp; (R3S3 = 1 -&gt; IR[3]=1) &amp; (R4S1=1 -&gt; IR[4]=1) &amp; (R4S1=1 -&gt; IS[1]=1) &amp; ((R1S2=1 | R2S2=1) -&gt; IS[2]=1) &amp; (R3S3 = 1 -&gt; IS[3]=1) &amp; ((R1S4=1 | R2S4=1)-&gt; IS[4]=1))
+-- ALL ANCESTORS MATCHED
+&amp; (IR[2]=1 &lt;-&gt; (R1S2=1 | R1S4=1))
+-- UNIQUENESS
+&amp; ((R1S2=1 -&gt; (R1S4=0 &amp; R2S2=0)) &amp; (R1S4=1 -&gt; (R1S2=0 &amp; R2S4=0)) &amp; (R2S2=1 -&gt; (R2S4=0 &amp; R1S2=0)) &amp; (R2S4=1 -&gt; (R2S2=0 &amp; R1S4=0)) )
+);</spcSafetyContent>
+  <spcLivenessContent></spcLivenessContent>
+  <treeOutline>
+    <moduleName>main</moduleName>
+    <children>
+      <NODE>
+        <moduleName>main.P[1]</moduleName>
+        <parent reference="../../.."/>
+        <children>
+          <SHARE>
+            <pointsTo>
+              <fieldPath>main</fieldPath>
+              <fieldName>IS[1]</fieldName>
+              <parent class="NODE" reference="../../../../../.."/>
+            </pointsTo>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo>
+              <fieldPath>main</fieldPath>
+              <fieldName>IS[2]</fieldName>
+              <parent class="NODE" reference="../../../../../.."/>
+            </pointsTo>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo>
+              <fieldPath>main</fieldPath>
+              <fieldName>IS[3]</fieldName>
+              <parent class="NODE" reference="../../../../../.."/>
+            </pointsTo>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo>
+              <fieldPath>main</fieldPath>
+              <fieldName>IS[4]</fieldName>
+              <parent class="NODE" reference="../../../../../.."/>
+            </pointsTo>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo>
+              <fieldPath>main</fieldPath>
+              <fieldName>IR[1]</fieldName>
+              <parent class="NODE" reference="../../../../../.."/>
+            </pointsTo>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo>
+              <fieldPath>main</fieldPath>
+              <fieldName>IR[2]</fieldName>
+              <parent class="NODE" reference="../../../../../.."/>
+            </pointsTo>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo>
+              <fieldPath>main</fieldPath>
+              <fieldName>IR[3]</fieldName>
+              <parent class="NODE" reference="../../../../../.."/>
+            </pointsTo>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo>
+              <fieldPath>main</fieldPath>
+              <fieldName>IR[4]</fieldName>
+              <parent class="NODE" reference="../../../../../.."/>
+            </pointsTo>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo>
+              <fieldPath>main</fieldPath>
+              <fieldName>R1S2</fieldName>
+              <parent class="NODE" reference="../../../../../.."/>
+            </pointsTo>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo>
+              <fieldPath>main</fieldPath>
+              <fieldName>R1S4</fieldName>
+              <parent class="NODE" reference="../../../../../.."/>
+            </pointsTo>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo>
+              <fieldPath>main</fieldPath>
+              <fieldName>R2S2</fieldName>
+              <parent class="NODE" reference="../../../../../.."/>
+            </pointsTo>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo>
+              <fieldPath>main</fieldPath>
+              <fieldName>R2S4</fieldName>
+              <parent class="NODE" reference="../../../../../.."/>
+            </pointsTo>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo>
+              <fieldPath>main</fieldPath>
+              <fieldName>R3S3</fieldName>
+              <parent class="NODE" reference="../../../../../.."/>
+            </pointsTo>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo>
+              <fieldPath>main</fieldPath>
+              <fieldName>R4S1</fieldName>
+              <parent class="NODE" reference="../../../../../.."/>
+            </pointsTo>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <LEAF>
+            <fieldPath>main.P[1]</fieldPath>
+            <fieldName>loc</fieldName>
+            <parent class="NODE" reference="../../.."/>
+          </LEAF>
+        </children>
+      </NODE>
+      <NODE>
+        <moduleName>main.P[2]</moduleName>
+        <parent reference="../../.."/>
+        <children>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[2]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[3]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[4]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[5]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[6]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[7]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[8]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[9]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[10]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[11]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[12]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[13]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[14]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <LEAF>
+            <fieldPath>main.P[2]</fieldPath>
+            <fieldName>loc</fieldName>
+            <parent class="NODE" reference="../../.."/>
+          </LEAF>
+        </children>
+      </NODE>
+      <NODE>
+        <moduleName>main.P[3]</moduleName>
+        <parent reference="../../.."/>
+        <children>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[2]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[3]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[4]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[5]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[6]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[7]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[8]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[9]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[10]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[11]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[12]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[13]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[14]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <LEAF>
+            <fieldPath>main.P[3]</fieldPath>
+            <fieldName>loc</fieldName>
+            <parent class="NODE" reference="../../.."/>
+          </LEAF>
+        </children>
+      </NODE>
+      <NODE>
+        <moduleName>main.P[4]</moduleName>
+        <parent reference="../../.."/>
+        <children>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[2]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[3]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[4]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[5]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[6]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[7]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[8]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[9]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[10]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[11]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[12]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[13]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <SHARE>
+            <pointsTo reference="../../../../NODE/children/SHARE[14]/pointsTo"/>
+            <parent class="NODE" reference="../../.."/>
+          </SHARE>
+          <LEAF>
+            <fieldPath>main.P[4]</fieldPath>
+            <fieldName>loc</fieldName>
+            <parent class="NODE" reference="../../.."/>
+          </LEAF>
+        </children>
+      </NODE>
+      <LEAF reference="../NODE/children/SHARE/pointsTo"/>
+      <LEAF reference="../NODE/children/SHARE[2]/pointsTo"/>
+      <LEAF reference="../NODE/children/SHARE[3]/pointsTo"/>
+      <LEAF reference="../NODE/children/SHARE[4]/pointsTo"/>
+      <LEAF reference="../NODE/children/SHARE[5]/pointsTo"/>
+      <LEAF reference="../NODE/children/SHARE[6]/pointsTo"/>
+      <LEAF reference="../NODE/children/SHARE[7]/pointsTo"/>
+      <LEAF reference="../NODE/children/SHARE[8]/pointsTo"/>
+      <LEAF reference="../NODE/children/SHARE[9]/pointsTo"/>
+      <LEAF reference="../NODE/children/SHARE[10]/pointsTo"/>
+      <LEAF reference="../NODE/children/SHARE[11]/pointsTo"/>
+      <LEAF reference="../NODE/children/SHARE[12]/pointsTo"/>
+      <LEAF reference="../NODE/children/SHARE[13]/pointsTo"/>
+      <LEAF reference="../NODE/children/SHARE[14]/pointsTo"/>
+    </children>
+  </treeOutline>
+</edu.spi.core.CoreInfo>
